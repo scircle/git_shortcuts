@@ -1,0 +1,36 @@
+#GIT files                                                                                         
+alias v1 'vi `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=1`'                       
+alias v2 'vi `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=2`'                       
+alias v3 'vi `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=3`'                       
+alias v-1 'vi `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=n-1`'                   
+alias vn 'vi `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=n`'                       
+alias vall 'gdw `git status | gawk -f ~/bin/scripts/gitFiles.awk`'                                 
+alias gd1 'gdw `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=1`'                     
+alias gd2 'gdw `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=2`'                     
+alias gd3 'gdw `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=3`'                     
+alias gd-1 'gdw `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=n-1`'                 
+alias gdn 'gdw `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=n`'                     
+alias gda 'gdw `git status | gawk -f ~/bin/scripts/gitFiles.awk`'                                  
+alias gc1 'git co -- `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=1`'               
+alias gc2 'git co -- `git status | gawk -f ~/bin/scripts/gitFiles.awk -v FILEIDX=2`'               
+alias gca 'git co -- `git status | gawk -f ~/bin/scripts/gitFiles.awk`'                            
+alias gaa 'git add `git status | gawk -f ~/bin/scripts/gitFiles.awk`'                              
+                                                                                                    
+#GIT acts                                                                                          
+alias gacts 'git log --pretty=format:"%h : %an : %s" | gawk -f ~/bin/scripts/gitActs.awk'          
+alias gmyacts 'git log --pretty=format:"%h : %an : %s" --author="`git config user.name`"| gawk -f ~    /bin/scripts/gitActs.awk'                                                                          
+alias gmylact 'gmyacts | head -1'                                                                  
+alias gact 'git log --pretty=format:"%h : %an : %s" | gawk -f ~/bin/scripts/gitActs.awk -v ACT=\!:1    '                                                                                                  
+alias gSHAact 'gact \!:1'                                                                          
+alias gSHAmylact 'gmylact | cut -d':' -f1'                                                         
+#files in last commit                                                                              
+alias gact_f 'git changed `gSHAact \!:1`'                                                          
+alias glact_f 'git changed `gSHAmylact`'                                                           
+#alias gxdact 'git diff "`gact \!:1`\{\^\,\}" '                                                    
+#according to the pattern(JIRA number), like 12345                                                 
+#alias gxdact 'git diff `gSHAact \!:1` `gSHAact \!:1`\^'                                           
+#Use xargs to handle multiple records                                                              
+alias gxdact 'echo `gSHAact \!:1` | xargs -n 1 | xargs -I {} git diff {} "{}^"'                    
+#-r is GNU extension                                                                               
+#alias gxdact 'echo `gSHAact \!:1` | xargs -r -n 1 | xargs -I {} git diff {} "{}^"'                
+#alias gxa 'foreach x "(`gSHAact \!:1`)" \\ echo $x \\ end'   
