@@ -9,6 +9,8 @@ files in one commit? How to diff them one by one? etc.
 
   Here is the recipe.
   
+  ![git shortcuts overview](https://github.com/scircle/git_shortcuts/blob/master/gh1.jpg)
+  
 # Files and usage:
   * two AWK files (gitFiles.awk, gitActs.awk)
   * one alias file
