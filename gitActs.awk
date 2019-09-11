@@ -1,8 +1,16 @@
-#Author:  scircle 
-#Date:    Arp 13, 2014
-#Purpose: To get all commits in current repo 
-#Note:    You need to update the PAT around 51. In my case, we assume 
-#         the Jira ticket is prefixed by ALEXA. e.g. ALEXA-12345.
+#Author:    scircle@pku.org.cn
+#Copyright: https://github.com/scircle/git_shortcuts
+#Date:      Arp 13, 2014
+#
+#Purpose:   To get all commits in current repo
+#
+#Version:   0.2 in Sep, 2019
+#           . Change both numIdx and numAct from 1 to 0
+#	        . remove gawk extension warning by turning on gawk --lint
+#
+#Note:      You must change the PAT(around line 57) to your project name.
+#           Here, we assume it's MESOS (your JIRA ticket would be
+#           MESOS-3661)
 
 function getAllActs()
 {
@@ -10,27 +18,24 @@ function getAllActs()
     #be overrided if next record matches
     #if ($3 ~ PAT)
     #use substr() instead of $3 because there would be such record:
-    #deliver.xxx_32.20120721.196841 [ALEXA-12345]
+    #deliver.scircle_ml2.20120626.192881 [XXX-3021]
     if (substr($3,0,10) ~ PAT)
     {
-        actArr[numIdx] = $0
-        numIdx++
+        actArr[numIdx++] = $0
     }
 
 }
 
 function getActFiles()
 {
-    tmpActArrLen = length(actArr)
-    for (i = 1; i <= tmpActArrLen; i++)
+    for (i = 0; i < numIdx; i++)
         {
         split(actArr[i],curActArr)
         if (curActArr[3] ~ ACT)
             {
             #use gsub() to remove space
             gsub(/ /,"",curActArr[1])
-            fileArr[numAct] = curActArr[1]
-            numAct++
+            fileArr[numAct++] = curActArr[1]
             }
         }
 }
@@ -47,8 +52,9 @@ BEGIN {
     #if pattern not specified
     if (length(PAT) == 0)
         {
-        # You need to update the PAT here.
-        PAT = "ALEXA"
+        #use two \\ because string constant is scanned twice if special
+	#character in pattern
+        PAT = "MESOS"
         }
 
     #if not specified
@@ -57,8 +63,8 @@ BEGIN {
         ACT = -1
         }
 
-    numIdx = 1
-    numAct = 1
+    numIdx = 0
+    numAct = 0
 }
 
 #BODY
@@ -79,22 +85,13 @@ END {
     if (ACT == -1)
         {
         #for (x in arr) doesn't select the indexes in numberic order.
-        numActArr = length(actArr)
-        for (i = 1; i <= numActArr; i++)
+        for (i = 0; i < numIdx; i++)
             print actArr[i]
         }
     else
         {
         getActFiles()
-        numFileArr = length(fileArr)
-        if (numFileArr >= 1)
-            {
-            for (i = 1; i <= numFileArr; i++)
-                print fileArr[i]
-            }
-        else
-            {
-            exit 1
-            }
+        for (i = 0; i < numAct; i++)
+            print fileArr[i]
         }
 }
